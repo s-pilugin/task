@@ -46,14 +46,14 @@ PCAPReader::PCAPReader(const std::string& fileName)
   }
 
   pcap_hdr_t global_header = {};
-  filestream.read((char*)&global_header, 24); // читаем global header
+  filestream.read((char*)&global_header, 24); // С‡РёС‚Р°РµРј global header
 
   while (!filestream.eof())
   {
     pcaprec_hdr_t packet_header = {};
-    filestream.read((char*)&packet_header, 16); // читаем packet header
+    filestream.read((char*)&packet_header, 16); // С‡РёС‚Р°РµРј packet header
 
-    // изменяем порядок байт, если это необходимо
+    // РёР·РјРµРЅСЏРµРј РїРѕСЂСЏРґРѕРє Р±Р°Р№С‚, РµСЃР»Рё СЌС‚Рѕ РЅРµРѕР±С…РѕРґРёРјРѕ
     // https://www.quora.com/How-do-you-reverse-a-byte-order-in-C
     if (m_file_state == 2) {
       packet_header.incl_len =
@@ -62,10 +62,10 @@ PCAPReader::PCAPReader(const std::string& fileName)
         ((packet_header.incl_len << 8) & 0x00FF0000ul) |
         ((packet_header.incl_len << 24) & 0xFF000000ul);
     }
-    // читаем пакет, пока без обработки
+    // С‡РёС‚Р°РµРј РїР°РєРµС‚, РїРѕРєР° Р±РµР· РѕР±СЂР°Р±РѕС‚РєРё
     filestream.ignore(packet_header.incl_len);
     
-    // увеличиваем значение переменных кол-ва пакетов и длины полезной информации
+    // СѓРІРµР»РёС‡РёРІР°РµРј Р·РЅР°С‡РµРЅРёРµ РїРµСЂРµРјРµРЅРЅС‹С… РєРѕР»-РІР° РїР°РєРµС‚РѕРІ Рё РґР»РёРЅС‹ РїРѕР»РµР·РЅРѕР№ РёРЅС„РѕСЂРјР°С†РёРё
     m_packet_count++;
     m_payload_size += packet_header.incl_len;
   }
